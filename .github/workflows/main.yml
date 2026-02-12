@@ -1,17 +1,22 @@
-name: JSDoc build on GitHub repo
+name: JSDoc build and deploy
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches:
+      - 02-solution-study-case
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout source branch
+        uses: actions/checkout@v4
         with:
           ref: 02-solution-study-case
-      
-      - name: Build
+
+      - name: Build JSDoc
         uses: andstor/jsdoc-action@v1
         with:
           source_dir: ./assets
@@ -21,8 +26,9 @@ jobs:
           template: minami
           front_page: README.md
 
-      - name: Deploy
+      - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./out
+          publish_branch: gh-pages
